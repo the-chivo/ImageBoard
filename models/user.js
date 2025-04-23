@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 import { sequelize } from "../db/sequelize.js";
 
-const User = sequelize.define("User", {
+export const User = sequelize.define("User", {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,

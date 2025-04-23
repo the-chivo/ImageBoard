@@ -4,6 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "nodemon -e js,html,css,njk,json index.js",
+    "__comment_start": "La flag -e indica las extensiones de los archivos a observar",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
