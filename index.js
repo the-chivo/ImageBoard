@@ -30,6 +30,23 @@ app.get('/', async (req, res) => {
     });
 });
 
+app.get('/tabladb', async (req, res) => {
+    const usersRaw = await User.findAll(); 
+    const users = usersRaw.map(user => {
+        return {
+            id: user.id,
+            name: user.username,
+            password: user.password, 
+        };
+    });
+    console.log(users);
+    res.render('database', { 
+        title: 'Tabla de Usuarios',
+        desc: 'Lista de usuarios registrados en la base de datos:',
+        users
+    });
+});
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
