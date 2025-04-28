@@ -1,8 +1,10 @@
 import express from 'express'; // Importamos con la sintaxis de ESG
 import nunjucks from 'nunjucks'; 
 import { User } from './models/user.js';
+import { loggerBasic, loggerCustom } from './middleware/log.js';
 
 const app = express();
+app.use(loggerBasic); // Usamos el logger básico
 const port = 3000;
 
 const env = nunjucks.configure('views', {
@@ -13,6 +15,11 @@ const env = nunjucks.configure('views', {
 // Middleware para procesar datos del cuerpo de las solicitudes
 app.use(express.urlencoded({ extended: true })); // Para datos de formularios
 app.use(express.json()); // Para datos en formato JSON
+
+import userRouter from './routes/users.js'; // Importamos el router de usuarios
+import pagesRouter from './routes/pages.js'; // Importamos el router de páginas
+app.use('/users', userRouter); // Usamos el router de usuarios
+app.use('/', pagesRouter); // Usamos el router de páginas
 
 
 app.set('view engine', 'njk'); // Configuramos Nunjucks como motor de plantillas
