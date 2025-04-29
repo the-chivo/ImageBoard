@@ -14,8 +14,17 @@ const loggerCustom = morgan((tokens, req, res) => {
     const query = JSON.stringify(req.query);
     const responseTime = tokens['response-time'](req, res);
     const date = new Date().toISOString();
+    
+    // Cambio de colores
+    const coloredMethod = method === "GET"
+    ? chalk.blue (method)
+    : method === "POST"
+    ? chalk.green (method)
+    : chalk.white(method);
+    
+    
     let log = "";
-    log += `${chalk.blue (method)} ${url} ${status} \n`;
+    log += `➜ ${coloredMethod} S{url} S{status}n';
     log += `${responseTime}ms ${date} \n`;
     log += `IP: ${ip} \n`;
     log += `User-Agent: ${userAgent} \n`;
