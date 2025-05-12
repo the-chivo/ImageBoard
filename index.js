@@ -1,108 +1,77 @@
-import express from 'express'; // Importamos con la sintaxis de ESG
-import nunjucks from 'nunjucks'; 
+import express from 'express';
+import nunjucks from 'nunjucks';
 import { User } from './models/user.js';
+import userRouter from './router/users.js';
+import pagesRouter from './router/pages.js';
+import authRoutes from './router/auth.js';
 import { loggerBasic, loggerCustom } from './middleware/log.js';
-import session from 'express-session'; // Importamos express-session
-import SQLiteStore from 'connect-sqlite3'; // Importamos SQLiteStore
+import session from 'express-session';
+import SQLitestore from 'connect-sqlite3';
+import boardsRouter from './router/boards.js';
 
 const app = express();
-app.use(loggerBasic); // Usamos el logger básico
-const port = 3000;
 
-const SQLiteStoreSession = SQLiteStore(session); // Creamos una instancia de SQLiteStore
+import "./db/init.js";
+import "./db/associations.js";
+import "./db/populate.js";
+
+app.use(loggerCustom);
+
+const port = 3000;
+const SQLiteStoreSession = SQLitestore(session);
 
 const sessionStore = new SQLiteStoreSession({
-    db: 'sessions.sqlite', // Nombre de la base de datos para las sesiones
-    dir: './db', // Directorio donde se guardará la base de datos
+  db: 'sessions.sqlite',
+  dir: './db',
+  table: 'sessions',
+  dir: './db'
 });
 
 const sessionConfig = {
-    store: sessionStore, // Usamos el store de SQLite
-    secret: '1234',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 // Duración de la cookie en milisegundos (1 día)
-    },
-};
+  store: sessionStore,
+  secret: "1234",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+  }
+}
 
-app.use(session(sessionConfig)); // Usamos el middleware de sesión
+app.use(session(sessionConfig));
 
 const env = nunjucks.configure('views', {
-    autoescape: true, // Activamos el autoescape para evitar XSS 
-    express: app,
+  autoescape: true,
+  express: app
 });
 
-// Middleware para procesar datos del cuerpo de las solicitudes
-app.set('view engine', 'njk'); // Configuramos Nunjucks como motor de plantillas
-app.use(express.urlencoded({ extended: true })); // Para datos de formularios
-app.use(express.json()); // Para datos en formato JSON
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-import userRouter from './routes/users.js'; // Importamos el router de usuarios
-import pagesRouter from './routes/pages.js'; // Importamos el router de páginas
-import authRouter from './routes/auth.js'; // Importamos el router de autenticación
-app.use('/users', userRouter); // Usamos el router de usuarios
-app.use('/', pagesRouter); // Usamos el router de páginas
-app.use('/', authRouter); // Usamos el router de autenticación
+app.set ('view engine', 'njk');
 
+app.use("/users", userRouter);
+app.use("/boards", boardsRouter);
+app.use("/", pagesRouter);
+app.use("/", authRoutes);
 
-app.set('view engine', 'njk'); // Configuramos Nunjucks como motor de plantillas
 
 app.get('/', async (req, res) => {
-    const usersRaw = await User.findAll();
-    const users = usersRaw.map(user => {
-        return {
-            id: user.id,
-            name: user.username,
-            password: user.password,
-        }
+  const usersRaw = await User.findAll();
+  const users = usersRaw.map(user => {
+    return {
+      id: user.id,
+      name: user.name,
+      password: user.password
     }
-    );
-    console.log(users);
-    res.render('test', { 
-        title: 'Test de Nunjucks',
-        desc: 'Porbando el motor de plantillas',
-        users
-    });
+  });
+
+  res.render('table', {
+      title: "Test nunjucks",
+      desc: "Testing my nunjucks template engine",
+      users
+  });
 });
-
-app.get('/tabladb', async (req, res) => {
-    const usersRaw = await User.findAll(); 
-    const users = usersRaw.map(user => {
-        return {
-            id: user.id,
-            name: user.username,
-            password: user.password, 
-        };
-    });
-    console.log(users);
-    res.render('database', { 
-        title: 'Tabla de Usuarios',
-        desc: 'Lista de usuarios registrados en la base de datos:',
-        users
-    });
-});
-
-app.get('/tabladb', async (req, res) => {
-    const usersRaw = await User.findAll(); 
-    const users = usersRaw.map(user => {
-        return {
-            id: user.id,
-            name: user.username,
-            password: user.password, 
-        };
-    });
-    console.log(users);
-    res.render('database', { 
-        title: 'Tabla de Usuarios',
-        desc: 'Lista de usuarios registrados en la base de datos:',
-        users
-    });
-});
-
-
-
 
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server listening at http://localhost:${port}`);
 });

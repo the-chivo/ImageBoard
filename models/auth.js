@@ -1,22 +1,22 @@
 import { User } from '../models/user.js';
 import bcrypt from 'bcrypt';
 
-const checkPassword = async (password, hash) => {
-    return await bcrypt.compare(password, hash);
-};
+const checkPassword = async (password, hashedPassword) => {
+    return await bcrypt.compare(password, hashedPassword);
+}
 
-export const authenticateUser = async (username, password) => {
+export const authenticateUser = async (name, password) => {
     const user = await User.findOne({
-        where: { 
-            username: username 
-        } 
+        where: {
+            name: name
+        }
     });
     if (!user) {
-        return null; 
+        return null;
     }
     const isPasswordValid = await checkPassword(password, user.password);
     if (!isPasswordValid) {
-        return null; 
+        return null;
     }
     return user;
 }

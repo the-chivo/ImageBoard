@@ -3,23 +3,26 @@ import { isAuthenticated } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.get('/register', (req, res) => {
+router.get('/register', async (req, res) => {
     res.render('register', {
-        title: 'Registro',
-        desc: 'Crea una cuenta nueva',
+        title: "Register",
+        desc: "Create a new user"
     });
 });
 
-router.get('/login', (req, res) => {
+router.get('/login', async (req, res) => {
     res.render('login', {
-        title: 'Login',
-        desc: 'Inicia sesión con tu cuenta',
+        title: "Login",
+        desc: "Login to your account"
     });
 });
 
 router.get('/profile', isAuthenticated, (req, res) => {
-    const user = req.session.username;
-    res.render('profile', {user});
+    res.render('profile', {
+        title: "Profile",
+        desc: "Your profile page",
+        user: req.session.username
+    });
 });
 
 export default router;

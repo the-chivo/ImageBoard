@@ -1,4 +1,4 @@
-import { User } from "../models/user.js";
+import { User } from '../models/user.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
 
@@ -14,16 +14,14 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post ("/", async (req, res) => {
-    console.log("Llamaste a la ruta de registro");
-    const { username, password } = req.body;
+router.post('/', async (req, res) => {
+    const {name, password} = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-        username,
-        password: hashedPassword
+        name: name,
+        password: hashedPassword,
     });
-    res.redirect('/tabladb');
+    res.status(201).json(user);
 });
 
 export default router;
-
