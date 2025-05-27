@@ -1,0 +1,62 @@
+<nav class="top-navbar">
+    <ul>
+        <li><a href="/"> Home</a></li>
+        <li><a href="/Profile"> Profile</a></li>
+        <li><a href="/register"> Register</a></li>
+        <li><a href="/login"> Login</a></li>
+        <li><a href="/boards"> Boards</a></li>
+    </ul>
+</nav>
+
+<style>
+.top-navbar {
+    width: 100%;
+    background: #000000;
+    padding: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.top-navbar ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 60px;
+}
+.top-navbar li {
+    margin: 0 25px;
+}
+.top-navbar a {
+    color: #f7f7f7;
+    text-decoration: none;
+    font-size: 1.15em;
+    padding: 10px 0;
+    position: relative;
+    transition: color 0.2s;
+}
+.top-navbar a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 3px;
+    background: #ffb347;
+    transition: width 0.3s;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+.top-navbar a:hover, .top-navbar a:focus {
+    color: #ffb347;
+}
+.top-navbar a:hover::after, .top-navbar a:focus::after {
+    width: 100%;
+}
+body {
+    padding-top: 60px; /* Para que el contenido no quede debajo de la navbar */
+}
+</style>

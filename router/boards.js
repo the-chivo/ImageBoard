@@ -1,6 +1,7 @@
 import express from 'express';
 import { Board } from '../models/board.js';
 import { Post } from '../models/post.js';
+import { User } from '../models/user.js';
 
 const router = express.Router();
 
@@ -16,7 +17,10 @@ router.get('/:id', async (req, res) => {
     if (!board) {
         return res.status(404).send('Board not found');
     }
-    const posts = await Post.findAll({ where: { boardId: board.id } });
+    const posts = await Post.findAll({ 
+        where: { boardId: board.id },
+        include: [{ model: User, as: 'user', attributes: ['name'] }]
+    });
     res.render('board', { title: board.name, board, posts });
 });
 
